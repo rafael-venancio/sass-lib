@@ -19,12 +19,13 @@ $linear-prophoto-blue             : 0.00008565396060525902;
 $alpha-min                        : 0.055;
 $alpha-max                        : ($alpha-min + $max-linear);
 $profile                          : 'srgb'; // srgb, p3, prophoto
-$profile-srgb                     : ($profile == 'srgb');
+$profile-gamma                    : 'default';
+$linear-gamma                     : if($profile-gamma == 'default', $gamma-srgb, $gamma-srgb-alt);
 $linear-red                       : if($profile == 'srgb', $linear-srgb-red, if($profile == 'p3', $linear-p3-red, $linear-prophoto-red));
 $linear-green                     : if($profile == 'srgb', $linear-srgb-green, if($profile == 'p3', $linear-p3-green, $linear-prophoto-green));
 $linear-blue                      : if($profile == 'srgb', $linear-srgb-blue, if($profile == 'p3', $linear-p3-green, $linear-prophoto-blue));
 $min-accessibility                : 1;
 $max-accessibility                : 21;
-$lightest-color                   : hsl(0, 0%, 100%);
-$darkest-color                    : hsl(0, 0%, 0%);
+$lightest-color                   : hsl(0, 0%, 100%); // white
+$darkest-color                    : hsl(0, 0%, 0%); // black
 $tone-bridge                      : $linear-red;

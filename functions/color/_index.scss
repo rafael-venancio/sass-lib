@@ -1,0 +1,20 @@
+@use 'sass:color';
+@use 'sass:list';
+@use 'sass:math';
+
+@use 'variable' as *;
+
+
+@function f_clamp($value, $min: $min-linear, $max: $max-linear) {
+  @return math.min(math.max($value, $min), $max);
+}
+
+
+@function linear_individual($input) {
+  $value: f_clamp(($input / $max-rgb));
+  $condition: ($value < $gamma-expanded);
+  $true: ($value / $standard-phi);
+  $false: (math.pow(($value + $alpha-min) / $alpha-max, $gamma));
+
+  @return if($condition, $true, $false);
+}
