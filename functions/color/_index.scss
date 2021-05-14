@@ -14,7 +14,7 @@
   $value: f_clamp(($input / $max-rgb));
   $condition: ($value < $gamma-expanded);
   $true: ($value / $standard-phi);
-  $false: (math.pow(($value + $alpha-min) / $alpha-max, $gamma));
+  $false: (math.pow(($value + $alpha-min) / $alpha-max, $linear-gamma));
 
   @return if($condition, $true, $false);
 }
