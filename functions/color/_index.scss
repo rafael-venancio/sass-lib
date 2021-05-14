@@ -37,3 +37,13 @@
 
   @return if($condition, $true, $false);
 }
+
+
+@function get_luminance($color) {
+  $red                            : (list.nth(linear($color), 1) * $linear-red);
+  $green                          : (list.nth(linear($color), 2) * $linear-green);
+  $blue                           : (list.nth(linear($color), 3) * $linear-blue);
+  $luminance                      : f_clamp(($red + $green + $blue));
+
+  @return $luminance;
+}
