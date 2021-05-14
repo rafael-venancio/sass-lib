@@ -49,7 +49,13 @@
 }
 
 
+@function contrast_ratio($color-a, $color-b) {
+  $sum                            : ($max-linear / 2);
+  $luminance-a                    : get_luminance($color-a);
+  $luminance-b                    : get_luminance($color-b);
+  $get-max                        : (math.max($luminance-a, $luminance-b) + $sum);
+  $get-min                        : (math.min($luminance-a, $luminance-b) + $sum);
+  $contrast-ratio                 : f_clamp(($get-max / $get-min), $accessibility-min, $accessibility-max);
 
-$debug-color: hsl(0, 0%, 50%);
-@debug linear($debug-color);
-@debug get_luminance($debug-color);
+  @return $contrast-ratio;
+}
