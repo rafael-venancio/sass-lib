@@ -49,3 +49,13 @@
 
   @return $contrast-ratio;
 }
+
+
+@function is_dark_or_light($color) {
+  $luminance                      : get_luminance($color);
+  $condition                      : ($luminance < $tone-bridge);
+  $true                           : 'dark';
+  $false                          : 'light';
+
+  @return if($condition, $true, $false);
+}
