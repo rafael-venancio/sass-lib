@@ -47,3 +47,9 @@
 
   @return $luminance;
 }
+
+
+
+$debug-color: hsl(0, 0%, 50%);
+@debug linear($debug-color);
+@debug get_luminance($debug-color);
