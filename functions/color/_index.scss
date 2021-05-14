@@ -59,3 +59,41 @@
 
   @return if($condition, $true, $false);
 }
+
+
+@function foreground($background, $foreground: $background, $min-ratio: 7) {
+
+  $background-luminance           : get_luminance($background);
+  $foreground-luminance           : get_luminance($foreground);
+  $contrast-ratio                 : contrast_ratio($background, $foreground);
+  $is-dark-or-light               : is_dark_or_light($background);
+
+  @if ($contrast-ratio < $min-ratio) {
+
+    @if ($is-dark-or-light == 'light') {
+
+      $darkest-test               : contrast_ratio($background, $darkest-color);
+      $current-test               : contrast_ratio($background, $foreground);
+      $condition                  : ($darkest-test > $current-test);
+      
+      @return if($condition, $darkest-color, $foreground);
+
+    } @else if ($is-dark-or-light == 'dark') {
+
+      $lightest-test              : contrast_ratio($background, $lightest-color);
+      $current-test               : contrast_ratio($background, $foreground);
+      $condition                  : ($lightest-test > $current-test);
+
+      @return if($condition, $lightest-color, $foreground);
+
+    } @else {
+
+      @warn '[ ERROR ]';
+      @return transparent;
+
+    }
+
+  }
+
+  @return $foreground;
+}
