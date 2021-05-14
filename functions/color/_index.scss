@@ -29,16 +29,6 @@
 }
 
 
-@function gamma_individual($input) {
-  $value                          : f_clamp(($input / $max-rgb));
-  $condition                      : ($value > $gamma-compressed);
-  $true                           : ($alpha-max * math.pow($value, (1 / $linear-gamma)) - $alpha-min);
-  $false                          : ($standard-phi * $value);
-
-  @return if($condition, $true, $false);
-}
-
-
 @function get_luminance($color) {
   $red                            : (list.nth(linear($color), 1) * $linear-red);
   $green                          : (list.nth(linear($color), 2) * $linear-green);
