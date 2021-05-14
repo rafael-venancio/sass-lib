@@ -73,16 +73,14 @@
     @if ($is-dark-or-light == 'light') {
 
       $darkest-test               : contrast_ratio($background, $darkest-color);
-      $current-test               : contrast_ratio($background, $foreground);
-      $condition                  : ($darkest-test > $current-test);
+      $condition                  : ($darkest-test > $contrast-ratio);
       
       @return if($condition, $darkest-color, $foreground);
 
     } @else if ($is-dark-or-light == 'dark') {
 
       $lightest-test              : contrast_ratio($background, $lightest-color);
-      $current-test               : contrast_ratio($background, $foreground);
-      $condition                  : ($lightest-test > $current-test);
+      $condition                  : ($lightest-test > $contrast-ratio);
 
       @return if($condition, $lightest-color, $foreground);
 
