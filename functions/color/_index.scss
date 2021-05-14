@@ -12,7 +12,7 @@
 
 @function linear_individual($input) {
   $value                          : f_clamp(($input / $max-rgb));
-  $condition                      : ($value < $gamma-expanded);
+  $condition                      : ($value <= $gamma-expanded);
   $true                           : ($value / $standard-phi);
   $false                          : (math.pow(($value + $alpha-min) / $alpha-max, $linear-gamma));
 
@@ -43,19 +43,19 @@
   $red                            : (list.nth(linear($color), 1) * $linear-red);
   $green                          : (list.nth(linear($color), 2) * $linear-green);
   $blue                           : (list.nth(linear($color), 3) * $linear-blue);
-  $luminance                      : f_clamp(($red + $green + $blue));
+  $luminance                      : f_clamp($red + $green + $blue);
 
   @return $luminance;
 }
 
 
 @function contrast_ratio($color-a, $color-b) {
-  $sum                            : ($max-linear / 2);
+  $sum                            : f_clamp($max-linear / 20);
   $luminance-a                    : get_luminance($color-a);
   $luminance-b                    : get_luminance($color-b);
   $get-max                        : (math.max($luminance-a, $luminance-b) + $sum);
   $get-min                        : (math.min($luminance-a, $luminance-b) + $sum);
-  $contrast-ratio                 : f_clamp(($get-max / $get-min), $accessibility-min, $accessibility-max);
+  $contrast-ratio                 : f_clamp(($get-max / $get-min), $min-accessibility, $max-accessibility);
 
   @return $contrast-ratio;
 }
