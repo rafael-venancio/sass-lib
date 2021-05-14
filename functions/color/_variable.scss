@@ -13,13 +13,16 @@ $linear-srgb-blue                 : 0.0721750;
 $linear-p3-red                    : 0.2289745640697488;
 $linear-p3-green                  : 0.6917385218365064;
 $linear-p3-blue                   : 0.079286914093745;
+$linear-prophoto-red              : 0.2880711282292934;
+$linear-prophoto-green            : 0.7118432178101014;
+$linear-prophoto-blue             : 0.00008565396060525902;
 $alpha-min                        : 0.055;
 $alpha-max                        : ($alpha-min + $max-linear);
-$profile                          : 'srgb'; // srgb, p3
+$profile                          : 'srgb'; // srgb, p3, prophoto
 $profile-srgb                     : ($profile == 'srgb');
-$linear-red                       : if($profile-srgb, $linear-srgb-red, $linear-p3-red);
-$linear-green                     : if($profile-srgb, $linear-srgb-green, $linear-p3-green);
-$linear-blue                      : if($profile-srgb, $linear-srgb-blue, $linear-p3-blue);
+$linear-red                       : if($profile == 'srgb', $linear-srgb-red, if($profile == 'p3', $linear-p3-red, $linear-prophoto-red));
+$linear-green                     : if($profile == 'srgb', $linear-srgb-green, if($profile == 'p3', $linear-p3-green, $linear-prophoto-green));
+$linear-blue                      : if($profile == 'srgb', $linear-srgb-blue, if($profile == 'p3', $linear-p3-green, $linear-prophoto-blue));
 $min-accessibility                : 1;
 $max-accessibility                : 21;
 $lightest-color                   : hsl(0, 0%, 100%);
