@@ -1,14 +1,33 @@
+@use 'sass:list';
+
 @use 'variable' as *;
 
 
-@function font-family($font-family, $generic-font) {
-  @if ($generic-font == 'sans') {
-    @return $font-family, $typeface-sans;
-  } @else if ($generic-font == 'serif') {
-    @return $font-family, $typeface-serif;
-  } @else if ($generic-font == 'monospace') {
-    @return $font-family, $typeface-monospace;
-  } @else {
-    @return $typeface-fallback;
+@function font_family($generic, $fonts...) {
+  $type: ();
+
+  @each $font in $fonts {
+    $type: list.append($type, $font, $separator: comma);
   }
+
+  @if ($generic == 'sans') {
+
+    $type: list.append($type, $typeface-sans);
+
+  } @else if ($generic == 'serif') {
+    
+    $type: list.append($type, $typeface-serif);
+  
+  } @else if ($generic == 'monospace') or ($generic == 'mono') {
+    
+    $type: list.append($type, $typeface-monospace);
+  
+  }
+
+  @return $type;
+}
+
+
+:root {
+  font-family: font_family('sans', 'Lato');
 }
