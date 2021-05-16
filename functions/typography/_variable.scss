@@ -1,0 +1,13 @@
+$typeface-system: -apple-system, BlinkMacSystemFont, X-LocaleSpecific, system-ui, sans-serif;
+$typeface-global: 'San Francisco', 'Helvetica Neue', 'Lucida Grande', 'Segoe UI', 'Tahoma', 'Microsoft Sans Serif', 'Roboto', 'Droid Sans', 'Ubuntu', 'Cantarell', 'Oxygen-Sans';
+$typeface-symbols: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'eos-icons', 'Material Icons';
+$typeface-fallback: $typeface-global, $typeface-system, $typeface-symbols;
+
+// sans-serif
+$typeface-sans: $typeface-fallback;
+
+// serif
+$typeface-serif: 'New York', 'Times New Roman', 'Roboto Slab', 'DejaVu Serif', serif, $typeface-sans;
+
+// monospace
+$typeface-monospace: 'SF Mono', 'Monaco', 'Menlo', 'Courier New', 'Roboto Mono', 'Ubuntu Mono', 'Hack', 'DejaVu Sans Mono', monospace, $typeface-serif;
