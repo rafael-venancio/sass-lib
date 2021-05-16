@@ -87,7 +87,7 @@
     } @else {
 
       @warn '[ ERROR ]';
-      @return transparent;
+      @return inherit;
 
     }
 
