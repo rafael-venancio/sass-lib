@@ -135,22 +135,22 @@
 
 
 @function c_50($color) {
-  $color: color.mix($color, base_light(), 12%);
+  $color: color.mix($color, base_light(), 25%);
   @return $color;
 }
 
 @function c_100($color) {
-  $color: color.mix($color, base_light(), 30%);
+  $color: color.mix($color, base_light(), 40%);
   @return $color;
 }
 
 @function c_200($color) {
-  $color: color.mix($color, base_light(), 50%);
+  $color: color.mix($color, base_light(), 55%);
   @return $color;
 }
 
 @function c_300($color) {
-  $color: color.mix($color, base_lignt(), 70%);
+  $color: color.mix($color, base_light(), 70%);
   @return $color;
 }
 
@@ -165,22 +165,22 @@
 }
 
 @function c_600($color) {
-  $color: color.mix($color, base_dark($color), 87%);
+  $color: color.mix($color, base_dark($color), 64%);
   @return $color;
 }
 
 @function c_700($color) {
-  $color: color.mix($color, base_dark($color), 70%);
+  $color: color.mix($color, base_dark($color), 32%);
   @return $color;
 }
 
 @function c_800($color) {
-  $color: color.mix($color, base_dark($color), 54%);
+  $color: color.mix($color, base_dark($color), 16%);
   @return $color;
 }
 
 @function c_900($color) {
-  $color: color.mix($color, base_dark($color), 25%);
+  $color: color.mix($color, base_dark($color), 8%);
   @return $color;
 }
 
@@ -193,17 +193,35 @@
 }
 
 @function c_a100($color) {
-  @return c_accent($color, 15%, 80%, 48%);
+  @return c_accent($color, 13%, 55%, 48%);
 }
 
 @function c_a200($color) {
-  @return c_accent($color, 15%, 80%, 36%);
+  @return c_accent($color, 13%, 55%, 36%);
 }
 
 @function c_a400($color) {
-  @return c_accent($color, 15%, 100%, 31%);
+  @return c_accent($color, 13%, 89%, 31%);
 }
 
 @function c_a700($color) {
-  @return c_accent($color, 15%, 100%, 28%);
+  @return c_accent($color, 13%, 89%, 28%);
+}
+
+
+@mixin generate-css-variables($color) {
+  --color-050: #{c_50($color)};
+  --color-100: #{c_100($color)};
+  --color-200: #{c_200($color)};
+  --color-300: #{c_300($color)};
+  --color-400: #{c_400($color)};
+  --color-500: #{c_500($color)};
+  --color-600: #{c_600($color)};
+  --color-700: #{c_700($color)};
+  --color-800: #{c_800($color)};
+  --color-900: #{c_900($color)};
+  --colorA100: #{c_a100($color)};
+  --colorA200: #{c_a200($color)};
+  --colorA400: #{c_a400($color)};
+  --colorA700: #{c_a700($color)};
 }
