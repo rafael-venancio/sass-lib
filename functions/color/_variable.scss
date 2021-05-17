@@ -1,33 +1,54 @@
+@use 'sass:math';
+
+// simple function to round any < float > value to specific decimal places
+@function dec($value, $decimal-places: 3) {
+  $e: math.pow(10, $decimal-places);
+  $x: (math.round($value * $e) / $e);
+  @return $x;
+}
+
+
 $max-rgb                          : 255;
-$max-linear                       : ($max-rgb / $max-rgb);
-$min-linear                       : 0;
-$gamma-compressed                 : 0.0031308;
-$gamma-expanded                   : 0.04045;
-$gamma-srgb                       : 2.4;
-$gamma-srgb-alt                   : (563 / $max-rgb);
-$gamma-prophoto                   : 1.8;
-$standard-phi                     : 12.9232102;
-$linear-srgb-red                  : 0.2126729;
-$linear-srgb-green                : 0.7151522;
-$linear-srgb-blue                 : 0.0721750;
-$linear-p3-red                    : 0.2289745640697488;
-$linear-p3-green                  : 0.6917385218365064;
-$linear-p3-blue                   : 0.079286914093745;
-$linear-prophoto-red              : 0.2880711282292934;
-$linear-prophoto-green            : 0.7118432178101014;
-$linear-prophoto-blue             : 0.00008565396060525902;
-$alpha-min                        : 0.055;
-$alpha-max                        : ($alpha-min + $max-linear);
-$profile                          : 'srgb';
-$profile-gamma                    : 'default';
-$linear-gamma                     : if($profile-gamma == 'default', $gamma-srgb, $gamma-srgb-alt);
-$linear-red                       : if($profile == 'srgb', $linear-srgb-red, if($profile == 'p3', $linear-p3-red, $linear-prophoto-red));
-$linear-green                     : if($profile == 'srgb', $linear-srgb-green, if($profile == 'p3', $linear-p3-green, $linear-prophoto-green));
-$linear-blue                      : if($profile == 'srgb', $linear-srgb-blue, if($profile == 'p3', $linear-p3-green, $linear-prophoto-blue));
-$min-accessibility                : $max-linear;
+$max-linear                       : dec($max-rgb / $max-rgb);
+$min-linear                       : dec($max-linear - $max-linear);
+
+$linear-srgb-red                  : dec(0.2126729);
+$linear-srgb-green                : dec(0.7151522);
+$linear-srgb-blue                 : dec(0.0721750);
+$linear-p3-red                    : dec(0.2289745640697488);
+$linear-p3-green                  : dec(0.6917385218365064);
+$linear-p3-blue                   : dec(0.079286914093745);
+
+$standard-phi                     : dec(12.9232102);
+
+$gamma-compressed                 : dec(0.0031308);
+$gamma-expanded                   : dec(0.0404482);
+$gamma-srgb                       : dec(2.4);
+$gamma-srgb-alt                   : dec(563 / $max-rgb);
+
+$max-alpha                        : dec(1.055);
+$min-alpha                        : dec($max-alpha - $max-linear);
+
+$linear-profile                   : 'srgb';
+$gamma-profile                    : 'default';
+
+$linear-gamma                     : if($gamma-profile== 'default', $gamma-srgb, $gamma-srgb-alt);
+
+@if ($linear-profile == 'srgb') {
+  $linear-red       : $linear-srgb-red;
+  $linear-green     : $linear-srgb-green;
+  $linear-blue      : $linear-srgb-blue;
+} @else if ($linear-profile == 'p3') {
+  $linear-red       : $linear-p3-red;
+  $linear-green     : $linear-p3-green;
+  $linear-blue      : $linear-p3-blue;
+}
+
 $max-accessibility                : 21;
-$lightest-color                   : hsl(0, 0%, 100%); // white
-$darkest-color                    : hsl(0, 0%, 0%); // black
-$demo-color                       : hsl(0, 0%, 50%);
-$fraction                         : (3 / 9);
-$tone-bridge                      : $fraction;
+$min-accessibility                : $max-linear;
+
+$tone-bridge                      : $linear-red;
+
+$lightest-color                   : #ffffff;
+$darkest-color                    : #000000;
+$demo-color                       : #0c322c;

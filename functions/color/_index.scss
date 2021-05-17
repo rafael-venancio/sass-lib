@@ -5,205 +5,175 @@
 @use 'variable' as *;
 
 
-@function f_clamp($value, $min: $min-linear, $max: $max-linear) {
-  @return math.min(math.max($value, $min), $max);
+@function clamp($val, $min: $min-linear, $max: $max-linear) {
+  $val: math.max($val, $min);
+  $val: math.min($val, $max);
+
+  @return $val;
 }
 
 
-@function linear_individual($input) {
-  $value                          : f_clamp(($input / $max-rgb));
-  $condition                      : ($value <= $gamma-expanded);
-  $true                           : ($value / $standard-phi);
-  $false                          : (math.pow(($value + $alpha-min) / $alpha-max, $linear-gamma));
+@function linear_individual($val) {
+  $val: clamp(dec($val / $max-rgb));
+  $c: ($val <= $gamma-expanded);
+  $t: dec($val / $standard-phi);
+  $f: dec(math.pow(($val + $min-alpha) / $max-alpha, $linear-gamma));
 
-  @return if($condition, $true, $false);
+  @return if($c, $t, $f);
+}
+
+
+@function r($c) {
+  @return color.red($c);
+}
+
+@function g($c) {
+  @return color.green($c);
+}
+
+@function b($c) {
+  @return color.blue($c);
 }
 
 
 @function linear($color) {
-  $red                            : linear_individual(color.red($color));
-  $green                          : linear_individual(color.green($color));
-  $blue                           : linear_individual(color.blue($color));
+  $r: linear_individual(r($color));
+  $g: linear_individual(g($color));
+  $b: linear_individual(b($color));
 
-  @return $red, $green, $blue;
+  @return $r, $g, $b;
 }
 
 
 @function get_luminance($color) {
-  $red                            : (list.nth(linear($color), 1) * $linear-red);
-  $green                          : (list.nth(linear($color), 2) * $linear-green);
-  $blue                           : (list.nth(linear($color), 3) * $linear-blue);
-  $luminance                      : f_clamp($red + $green + $blue);
+  $r: dec(list.nth(linear($color), 1) * $linear-red);
+  $g: dec(list.nth(linear($color), 2) * $linear-green);
+  $b: dec(list.nth(linear($color), 3) * $linear-blue);
+  $l: clamp($r + $g + $b);
 
-  @return $luminance;
+  @return $l;
 }
 
 
-@function contrast_ratio($color-a, $color-b) {
-  $sum                            : f_clamp($max-linear / 20);
-  $luminance-a                    : get_luminance($color-a);
-  $luminance-b                    : get_luminance($color-b);
-  $get-max                        : (math.max($luminance-a, $luminance-b) + $sum);
-  $get-min                        : (math.min($luminance-a, $luminance-b) + $sum);
-  $contrast-ratio                 : f_clamp(($get-max / $get-min), $min-accessibility, $max-accessibility);
+@function contrast_ratio($ca, $cb) {
+  $sum: clamp($max-linear / 20);
+  $la: get_luminance($ca);
+  $lb: get_luminance($cb);
+  $max: math.max($la, $lb) + $sum;
+  $min: math.min($la, $lb) + $sum;
+  $cr: clamp(($max / $min), $min-accessibility, $max-accessibility);
 
-  @return $contrast-ratio;
+  @return $cr;
 }
 
 
-@function is_dark_or_light($color) {
-  $luminance                      : get_luminance($color);
-  $condition                      : ($luminance < $tone-bridge);
-  $true                           : 'dark';
-  $false                          : 'light';
+@function is_dol($color) {
+  $l: get_luminance($color);
+  $c: ($l < $tone-bridge);
+  $t: 'dark';
+  $f: 'light';
 
-  @return if($condition, $true, $false);
+  @return if($c, $t, $f);
 }
 
 
-@function foreground($background, $foreground: $background, $min-ratio: 7) {
+@function foreground($bg, $fg: $bg, $mr: 7) {
+  $bgl: get_luminance($bg);
+  $fgl: get_luminance($fg);
+  $cr: contrast_ratio($bg, $fg);
+  $is_dol: is_dol($bg);
 
-  $background-luminance           : get_luminance($background);
-  $foreground-luminance           : get_luminance($foreground);
-  $contrast-ratio                 : contrast_ratio($background, $foreground);
-  $is-dark-or-light               : is_dark_or_light($background);
+  @if ($cr < $mr) {
+    @if ($is_dol == 'light') {
+      $dark: contrast_ratio($bg, $darkest-color);
+      $c: ($dark > $cr);
 
-  @if ($contrast-ratio < $min-ratio) {
+      @return if($c, $darkest-color, $fg);
+    } @else if ($is_dol == 'dark') {
+      $light: contrast_ratio($bg, $lightest-color);
+      $c: ($light > $cr);
 
-    @if ($is-dark-or-light == 'light') {
-
-      $darkest-test               : contrast_ratio($background, $darkest-color);
-      $condition                  : ($darkest-test > $contrast-ratio);
-      
-      @return if($condition, $darkest-color, $foreground);
-
-    } @else if ($is-dark-or-light == 'dark') {
-
-      $lightest-test              : contrast_ratio($background, $lightest-color);
-      $condition                  : ($lightest-test > $contrast-ratio);
-
-      @return if($condition, $lightest-color, $foreground);
-
+      @return if($c, $lightest-color, $fg);
     } @else {
-
-      @warn '[ ERROR ]';
+      @warn '[ error ]';
       @return inherit;
-
     }
-
   }
 
-  @return $foreground;
+  @return $fg;
 }
 
 
-// Material Palette Generator
-@function r($color) {
-  @return color.red($color);
+// material palette
+@function multi($ca, $cb) {
+  $r: dec(math.floor(r($ca) * r($cb) / $max-rgb));
+  $g: dec(math.floor(g($ca) * g($cb) / $max-rgb));
+  $b: dec(math.floor(b($ca) * b($cb) / $max-rgb));
+  $output-color: rgb($r, $g, $b);
+
+  @return $output-color;
 }
 
-@function g($color) {
-  @return color.green($color);
-}
 
-@function b($color) {
-  @return color.blue($color);
-}
-
-@function multiply($color-a, $color-b) {
-  $red: math.floor(r($color-a) * r($color-b) / $max-rgb);
-  $green: math.floor(g($color-a) * g($color-b) / $max-rgb);
-  $blue: math.floor(b($color-a) * b($color-b) / $max-rgb);
+@function base_light($c: $lightest-color) {
+  $c: (is_dol($c) == 'light');
+  $t: $c;
+  $f: $lightest-color;
   
-  @return rgb($red, $green, $blue);
-}
-
-@function base_light($color: $lightest-color) {
-  @return $color;
-}
-
-@function base_dark($color: $demo-color) {
-  @return multiply($color, $color);
-}
-
-@function base_triad($color: $demo-color) {
-  $h: color.hue($color);
-  $h: (($h + 270) % 360);
-
-  @return color.change($color, $hue: $h);
+  @return if($c, $t, $f);
 }
 
 
-@function c_50($color) {
-  $color: color.mix($color, base_light(), 25%);
-  @return $color;
+@function base_dark($c: $darkest-color) {
+  @return multi($c, $c);
 }
 
-@function c_100($color) {
-  $color: color.mix($color, base_light(), 40%);
-  @return $color;
+
+@function base_triad($c: $demo-color) {
+  $h: color.hue($c);
+  // $h: (($h + 270) % 360);
+  $h: (($h + 240) % 360);
+  $output-color: color.change($c, $hue: $h);
+
+  @return $output-color;
 }
 
-@function c_200($color) {
-  $color: color.mix($color, base_light(), 55%);
-  @return $color;
+
+@function shade($cmain, $cbase, $amount) {
+  $amount: ($amount * 100%);
+  $output-color: color.mix($cmain, $base, $amount);
+
+  @return $output-color;
 }
 
-@function c_300($color) {
-  $color: color.mix($color, base_light(), 70%);
-  @return $color;
+
+@function accent($cmain, $mix_amount, $sat_amount, $lig_amount) {
+  $mix: ($mix_amount * 100%);
+  $sat: ($sat_amount * 100%);
+  $lig: ($lig_amount * 100%);
+  $bt: base_triad($cmain);
+  $bd: base_dark($cmain);
+
+  $c: color.mix($bt, $bd, $mix);
+  $c: color.adjust($c, $saturation: $sat);
+  $output-color: lighten($c, $lig);
+
+  @return $output-color;
 }
 
-@function c_400($color) {
-  $color: color.mix($color, base_light(), 85%);
-  @return $color;
-}
 
-@function c_500($color) {
-  $color: color.mix($color, base_light(), 100%);
-  @return $color;
-}
+@function color_50($c)  { @return shade($c, base_light(), 0.12); }
+@function color_100($c) { @return shade($c, base_light(), 0.30); }
+@function color_200($c) { @return shade($c, base_light(), 0.50); }
+@function color_300($c) { @return shade($c, base_light(), 0.70); }
+@function color_400($c) { @return shade($c, base_light(), 0.85); }
+@function color_500($c) { @return shade($c, base_light(), 1.00); }
+@function color_600($c) { @return shade($c, base_dark($c), 0.87); }
+@function color_700($c) { @return shade($c, base_dark($c), 0.70); }
+@function color_800($c) { @return shade($c, base_dark($c), 0.54); }
+@function color_900($c) { @return shade($c, base_dark($c), 0.25); }
 
-@function c_600($color) {
-  $color: color.mix($color, base_dark($color), 64%);
-  @return $color;
-}
-
-@function c_700($color) {
-  $color: color.mix($color, base_dark($color), 32%);
-  @return $color;
-}
-
-@function c_800($color) {
-  $color: color.mix($color, base_dark($color), 16%);
-  @return $color;
-}
-
-@function c_900($color) {
-  $color: color.mix($color, base_dark($color), 8%);
-  @return $color;
-}
-
-@function c_accent($color, $c_mix, $sat, $lig) {
-  $color: color.mix(base_triad($color), base_dark($color), $c_mix);
-  $color: color.adjust($color, $saturation: $sat);
-  $color: lighten($color, $lig);
-
-  @return $color;
-}
-
-@function c_a100($color) {
-  @return c_accent($color, 13%, 55%, 48%);
-}
-
-@function c_a200($color) {
-  @return c_accent($color, 13%, 55%, 36%);
-}
-
-@function c_a400($color) {
-  @return c_accent($color, 13%, 89%, 31%);
-}
-
-@function c_a700($color) {
-  @return c_accent($color, 13%, 89%, 28%);
-}
+@function color_a100($c)  { @return accent($c, 0.15, 0.80, 0.48); }
+@function color_a200($c)  { @return accent($c, 0.15, 0.80, 0.36); }
+@function color_a400($c)  { @return accent($c, 0.15, 1.00, 0.31); }
+@function color_a700($c)  { @return accent($c, 0.15, 1.00, 0.28); }
