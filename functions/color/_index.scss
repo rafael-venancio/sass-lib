@@ -5,7 +5,7 @@
 @use 'variable' as *;
 
 
-@function clamp($val, $min: $min-linear, $max: $max-linear) {
+@function f_clamp($val, $min: $min-linear, $max: $max-linear) {
   $val: math.max($val, $min);
   $val: math.min($val, $max);
 
@@ -14,7 +14,7 @@
 
 
 @function linear_individual($val) {
-  $val: clamp(dec($val / $max-rgb));
+  $val: f_clamp(dec($val / $max-rgb));
   $c: ($val <= $gamma-expanded);
   $t: dec($val / $standard-phi);
   $f: dec(math.pow(($val + $min-alpha) / $max-alpha, $linear-gamma));
@@ -49,19 +49,19 @@
   $r: dec(list.nth(linear($color), 1) * $linear-red);
   $g: dec(list.nth(linear($color), 2) * $linear-green);
   $b: dec(list.nth(linear($color), 3) * $linear-blue);
-  $l: clamp($r + $g + $b);
+  $l: f_clamp($r + $g + $b);
 
   @return $l;
 }
 
 
 @function contrast_ratio($ca, $cb) {
-  $sum: clamp($max-linear / 20);
+  $sum: f_clamp($max-linear / 20);
   $la: get_luminance($ca);
   $lb: get_luminance($cb);
   $max: math.max($la, $lb) + $sum;
   $min: math.min($la, $lb) + $sum;
-  $cr: clamp(($max / $min), $min-accessibility, $max-accessibility);
+  $cr: f_clamp(($max / $min), $min-accessibility, $max-accessibility);
 
   @return $cr;
 }
