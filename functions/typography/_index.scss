@@ -7,7 +7,7 @@
   $type: ();
 
   @each $font in $fonts {
-    $type: list.append($type, $font, $separator, comma);
+    $type: list.append($type, $font, $separator: comma);
   }
 
   $c1: ($generic == 'sans');
