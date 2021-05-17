@@ -32,17 +32,10 @@ $min-alpha                        : dec($max-alpha - $max-linear);
 $linear-profile                   : 'srgb';
 $gamma-profile                    : 'default';
 
-$linear-gamma                     : if($gamma-profile== 'default', $gamma-srgb, $gamma-srgb-alt);
-
-@if ($linear-profile == 'srgb') {
-  $linear-red       : $linear-srgb-red;
-  $linear-green     : $linear-srgb-green;
-  $linear-blue      : $linear-srgb-blue;
-} @else if ($linear-profile == 'p3') {
-  $linear-red       : $linear-p3-red;
-  $linear-green     : $linear-p3-green;
-  $linear-blue      : $linear-p3-blue;
-}
+$linear-gamma                     : if($gamma-profile == 'default', $gamma-srgb, $gamma-srgb-alt);
+$linear-red                       : if($linear-profile == 'srgb', $linear-srgb-red, $linear-p3-red);
+$linear-green                     : if($linear-profile == 'srgb', $linear-srgb-green, $linear-p3-green);
+$linear-blue                      : if($linear-profile == 'srgb', $linear-srgb-blue, $linear-p3-blue);
 
 $max-accessibility                : 21;
 $min-accessibility                : $max-linear;
