@@ -141,7 +141,7 @@
 
 @function shade($cmain, $cbase, $amount) {
   $amount: ($amount * 100%);
-  $output-color: color.mix($cmain, $base, $amount);
+  $output-color: color.mix($cmain, $cbase, $amount);
 
   @return $output-color;
 }
