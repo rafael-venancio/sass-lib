@@ -1,47 +1,52 @@
-@use 'sass:math';
+// *_*
+$separator-line      : '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
 
-// simple function to round any < float > value to specific decimal places
-@function dec($value, $decimal-places: 3) {
-  $e: math.pow(10, $decimal-places);
-  $x: (math.round($value * $e) / $e);
-  @return $x;
-}
+// Magic numbers
+$magic-1             : 20;
+$magic-2             : 3;
 
+// Maximum and Minimum
+$max-rgb             : 255;
+$min-rgb             : 0;
+$max-linear          : ($max-rgb / $max-rgb);
+$min-linear          : $min-rgb;
+$max-alpha           : 1.055;
+$min-alpha           : ($max-alpha - $max-linear);
+$max-a11y            : ($magic-1 + $max-linear);
+$min-a11y            : ($max-a11y - $magic-1);
 
-$max-rgb                          : 255;
-$max-linear                       : dec($max-rgb / $max-rgb);
-$min-linear                       : dec($max-linear - $max-linear);
+// More Values
+$standard-phi        : 12.9232102;
 
-$linear-srgb-red                  : dec(0.2126729);
-$linear-srgb-green                : dec(0.7151522);
-$linear-srgb-blue                 : dec(0.0721750);
-$linear-p3-red                    : dec(0.2289745640697488);
-$linear-p3-green                  : dec(0.6917385218365064);
-$linear-p3-blue                   : dec(0.079286914093745);
+// About Gamma
+$gamma-compressed    : 0.0031308;
+$gamma-expanded      : 0.04045;
+$linear-gamma        : (563 / $max-rgb);
 
-$standard-phi                     : dec(12.9232102);
+// About sRGB
+$linear-srgb-x-red   : 0.4124564;
+$linear-srgb-x-green : 0.3575761;
+$linear-srgb-x-blue  : 0.1804375;
+$linear-srgb-y-red   : 0.2126729;
+$linear-srgb-y-green : 0.7151522;
+$linear-srgb-y-blue  : 0.0721750;
+$linear-srgb-z-red   : 0.0193339;
+$linear-srgb-z-green : 0.1191920;
+$linear-srgb-z-blue  : 0.9503041;
 
-$gamma-compressed                 : dec(0.0031308);
-$gamma-expanded                   : dec(0.0404482);
-$gamma-srgb                       : dec(2.4);
-$gamma-srgb-alt                   : dec(563 / $max-rgb);
+// About p3
+$linear-x-p3-r       : 2.493496911941425;
+$linear-y-p3-r       : -0.9313836179191239;
+$linear-z-p3-r       : -0.40271078445071684;
+$linear-x-p3-g       : -0.8294889695615747;
+$linear-y-p3-g       : 1.7626640603183463;
+$linear-z-p3-g       : 0.023624685841943577;
+$linear-x-p3-b       : 0.03584583024378447;
+$linear-y-p3-b       : -0.07617238926804182;
+$linear-z-p3-b       : 0.9568845240076872;
 
-$max-alpha                        : dec(1.055);
-$min-alpha                        : dec($max-alpha - $max-linear);
-
-$linear-profile                   : 'srgb';
-$gamma-profile                    : 'default';
-
-$linear-gamma                     : if($gamma-profile == 'default', $gamma-srgb, $gamma-srgb-alt);
-$linear-red                       : if($linear-profile == 'srgb', $linear-srgb-red, $linear-p3-red);
-$linear-green                     : if($linear-profile == 'srgb', $linear-srgb-green, $linear-p3-green);
-$linear-blue                      : if($linear-profile == 'srgb', $linear-srgb-blue, $linear-p3-blue);
-
-$max-accessibility                : 21;
-$min-accessibility                : $max-linear;
-
-$tone-bridge                      : $linear-red;
-
-$lightest-color                   : #ffffff;
-$darkest-color                    : #000000;
-$demo-color                       : #0c322c;
+// About color
+$tone-bridge         : $linear-srgb-y-red;
+$color-light         : #ffffff;
+$color-dark          : #000000;
+$color-demo          : #e95420;
