@@ -183,3 +183,27 @@
   $color: color.mix($color, base_dark($color), 25%);
   @return $color;
 }
+
+@function c_accent($color, $c_mix, $sat, $lig) {
+  $color: color.mix(base_triad($color), base_dark($color), $c_mix);
+  $color: color.adjust($color, $saturation: $sat);
+  $color: lighten($color, $lig);
+
+  @return $color;
+}
+
+@function c_a100($color) {
+  @return c_accent($color, 15%, 80%, 48%);
+}
+
+@function c_a200($color) {
+  @return c_accent($color, 15%, 80%, 36%);
+}
+
+@function c_a400($color) {
+  @return c_accent($color, 15%, 100%, 31%);
+}
+
+@function c_a700($color) {
+  @return c_accent($color, 15%, 100%, 28%);
+}
