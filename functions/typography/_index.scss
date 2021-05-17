@@ -1,49 +1,22 @@
 @use 'sass:list';
 
 @use 'variable' as *;
-@use '../dm' as *;
 
 
 @function font_family($generic, $fonts...) {
   $type: ();
 
   @each $font in $fonts {
-    $type: list.append($type, $font, $separator: comma);
+    $type: list.append($type, $font, $separator, comma);
   }
 
-  @if ($generic == 'sans') {
+  $c1: ($generic == 'sans');
+  $c2: ($generic == 'serif');
+  $c3: ($generic == 'monospace') or ($generic == 'mono');
 
-    $type: list.append($type, $typeface-sans);
-
-  } @else if ($generic == 'serif') {
-    
-    $type: list.append($type, $typeface-serif);
-  
-  } @else if ($generic == 'monospace') or ($generic == 'mono') {
-    
-    $type: list.append($type, $typeface-monospace);
-  
-  }
+  @if $c1 { $type:  list.append($type, $typeface-sans);}
+  @if $c2 { $type:  list.append($type, $typeface-serif);}
+  @if $c3 { $type:  list.append($type, $typeface-mono);}
 
   @return $type;
-}
-
-
-@if $debug-mode == 'enabled' {
-  $font-sans: 'Roboto';
-  $font-serif: 'Roboto Slab';
-  $font-mono: 'Roboto Mono';
-
-  @debug '';
-  @debug 'Debug mode is active';
-  @debug '';
-  @debug 'Current font sans-serif: ';
-  @debug '  #{font_family('sans', $font-sans)}';
-  @debug '';
-  @debug 'Current font serif: ';
-  @debug '  #{font_family('serif', $font-serif)}';
-  @debug '';
-  @debug 'Current font monospace: ';
-  @debug '  #{font_family('monospace', $font-mono)}';
-
 }
