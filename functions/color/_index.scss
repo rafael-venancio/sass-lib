@@ -207,21 +207,3 @@
 @function c_a700($color) {
   @return c_accent($color, 13%, 89%, 28%);
 }
-
-
-@mixin generate-css-variables($color) {
-  --color-050: #{c_50($color)};
-  --color-100: #{c_100($color)};
-  --color-200: #{c_200($color)};
-  --color-300: #{c_300($color)};
-  --color-400: #{c_400($color)};
-  --color-500: #{c_500($color)};
-  --color-600: #{c_600($color)};
-  --color-700: #{c_700($color)};
-  --color-800: #{c_800($color)};
-  --color-900: #{c_900($color)};
-  --colorA100: #{c_a100($color)};
-  --colorA200: #{c_a200($color)};
-  --colorA400: #{c_a400($color)};
-  --colorA700: #{c_a700($color)};
-}
