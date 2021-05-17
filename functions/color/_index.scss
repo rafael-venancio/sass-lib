@@ -95,9 +95,9 @@
   $g : color-clamp(($g * var.$max-rgb), var.$min-rgb, var.$max-rgb);
   $b : color-clamp(($b * var.$max-rgb), var.$min-rgb, var.$max-rgb);
 
-  $r : math.floor($r);
+  $r : math.round($r);
   $g : math.round($g);
-  $b : math.ceil($b);
+  $b : math.round($b);
 
   @return $r, $g, $b;
 }
