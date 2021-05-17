@@ -1,6 +1,7 @@
 @use 'sass:list';
 
 @use 'variable' as *;
+@use '../dm' as *;
 
 
 @function font_family($generic, $fonts...) {
@@ -28,6 +29,21 @@
 }
 
 
-:root {
-  font-family: font_family('sans', 'Lato');
+@if $debug-mode == 'enabled' {
+  $font-sans: 'Roboto';
+  $font-serif: 'Roboto Slab';
+  $font-mono: 'Roboto Mono';
+
+  @debug '';
+  @debug 'Debug mode is active';
+  @debug '';
+  @debug 'Current font sans-serif: ';
+  @debug '  #{font_family('sans', $font-sans)}';
+  @debug '';
+  @debug 'Current font serif: ';
+  @debug '  #{font_family('serif', $font-serif)}';
+  @debug '';
+  @debug 'Current font monospace: ';
+  @debug '  #{font_family('monospace', $font-mono)}';
+
 }

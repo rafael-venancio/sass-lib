@@ -95,3 +95,91 @@
 
   @return $foreground;
 }
+
+
+// Material Palette Generator
+@function r($color) {
+  @return color.red($color);
+}
+
+@function g($color) {
+  @return color.green($color);
+}
+
+@function b($color) {
+  @return color.blue($color);
+}
+
+@function multiply($color-a, $color-b) {
+  $red: math.floor(r($color-a) * r($color-b) / $max-rgb);
+  $green: math.floor(g($color-a) * g($color-b) / $max-rgb);
+  $blue: math.floor(b($color-a) * b($color-b) / $max-rgb);
+  
+  @return rgb($red, $green, $blue);
+}
+
+@function base_light($color: $lightest-color) {
+  @return $color;
+}
+
+@function base_dark($color: $demo-color) {
+  @return multiply($color, $color);
+}
+
+@function base_triad($color: $demo-color) {
+  $h: color.hue($color);
+  $h: (($h + 270) % 360);
+
+  @return color.change($color, $hue: $h);
+}
+
+
+@function c_50($color) {
+  $color: color.mix($color, base_light(), 12%);
+  @return $color;
+}
+
+@function c_100($color) {
+  $color: color.mix($color, base_light(), 30%);
+  @return $color;
+}
+
+@function c_200($color) {
+  $color: color.mix($color, base_light(), 50%);
+  @return $color;
+}
+
+@function c_300($color) {
+  $color: color.mix($color, base_lignt(), 70%);
+  @return $color;
+}
+
+@function c_400($color) {
+  $color: color.mix($color, base_light(), 85%);
+  @return $color;
+}
+
+@function c_500($color) {
+  $color: color.mix($color, base_light(), 100%);
+  @return $color;
+}
+
+@function c_600($color) {
+  $color: color.mix($color, base_dark($color), 87%);
+  @return $color;
+}
+
+@function c_700($color) {
+  $color: color.mix($color, base_dark($color), 70%);
+  @return $color;
+}
+
+@function c_800($color) {
+  $color: color.mix($color, base_dark($color), 54%);
+  @return $color;
+}
+
+@function c_900($color) {
+  $color: color.mix($color, base_dark($color), 25%);
+  @return $color;
+}
