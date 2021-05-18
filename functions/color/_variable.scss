@@ -1,3 +1,14 @@
+@use 'sass:math';
+
+// local function
+@function dec($x, $y: 3) {
+  $e: math.pow(10, $y);
+  $output: (math.ceil($x * $e) / $e);
+
+  @return $output;
+}
+
+
 // *_*
 $separator-line      : '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
 
@@ -47,6 +58,6 @@ $linear-z-p3-b       : 0.9568845240076872;
 
 // About color
 $tone-bridge         : $linear-srgb-y-red;
-$color-light         : #ffffff;
-$color-dark          : #000000;
-$color-demo          : #e95420;
+$color-light         : hsl(0, 0%, 100%);
+$color-dark          : hsl(0, 0%, 0%);
+$color-demo          : hsl(16, 82%, 52%);

@@ -56,21 +56,21 @@
   $g : color-clamp(linear-alone(g($color)));
   $b : color-clamp(linear-alone(b($color)));
 
-  @return $r, $g, $b;
+  @return var.dec($r), var.dec($g), var.dec($b);
 }
 
 
 @function color-xyz($color) {
   $mn : 100;
-  $var-r : (color-clamp(linear-alone(r($color))) * 100);
-  $var-g : (color-clamp(linear-alone(g($color))) * 100);
-  $var-b : (color-clamp(linear-alone(b($color))) * 100);
+  $var-r : (color-clamp(linear-alone(r($color))) * $mn);
+  $var-g : (color-clamp(linear-alone(g($color))) * $mn);
+  $var-b : (color-clamp(linear-alone(b($color))) * $mn);
 
   $x : ($var-r * var.$linear-srgb-x-red) + ($var-g * var.$linear-srgb-x-green) + ($var-b * var.$linear-srgb-x-blue);
   $y : ($var-r * var.$linear-srgb-y-red) + ($var-g * var.$linear-srgb-y-green) + ($var-b * var.$linear-srgb-y-blue);
   $z : ($var-r * var.$linear-srgb-z-red) + ($var-g * var.$linear-srgb-z-green) + ($var-b * var.$linear-srgb-z-blue);
 
-  @return $x, $y, $z;
+  @return var.dec($x), var.dec($y), var.dec($z);
 }
 
 
@@ -99,8 +99,61 @@
   $g : math.round($g);
   $b : math.round($b);
 
-  @return $r, $g, $b;
+  @return rgb($r, $g, $b);
 }
 
 
-@debug xyz-color(color-xyz(var.$color-demo));
+@function colorme($color) {
+        @return xyz-color(color-xyz($color));
+}
+
+
+@function get-luminance($color) {
+  $r: linear-alone(r($color));
+  $g: linear-alone(g($color));
+  $b: linear-alone(b($color));
+
+  $r: ($r * var.$linear-srgb-y-red);
+  $g: ($g * var.$linear-srgb-y-green);
+  $b: ($b * var.$linear-srgb-y-blue);
+
+  $output: var.dec(color-clamp($r + $g + $b));
+  
+  @return $output;
+}
+
+@function contrast-ratio($color-a, $color-b) {
+  $luminance-color-a: get-luminance($color-a);
+  $luminance-color-b: get-luminance($color-b);
+  $maximum-luminance: (math.max($luminance-color-a, $luminance-color-b) + var.$min-alpha);
+  $minimum-luminance: (math.min($luminance-color-a, $luminance-color-b) + var.$min-alpha);
+  $output-contrast: var.dec($maximum-luminance / $minimum-luminance);
+
+  @return $output-contrast;
+}
+
+
+@function foreground($min-cr, $bg, $fg: $bg) {
+
+        $bg-luminance: get-luminance($bg);
+        $fg-luminance: get-luminance($fg);
+        $contrast-ratio: contrast-ratio($bg, $fg);
+
+        @if ($contrast-ratio >= $min-cr) {
+                @return $fg;
+        }
+
+        @if ($bg-luminance < var.$tone-bridge) {
+                @return var.$color-light;
+        } @else {
+                @return var.$color-dark;
+        }
+        
+        @return inherit;
+}
+
+
+$c: rgb(0, 122, 255);
+
+@debug $c;
+@debug colorme($c);
